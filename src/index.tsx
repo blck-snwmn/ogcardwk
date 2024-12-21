@@ -44,7 +44,7 @@ export default {
 			/>,
 			{
 				width: 600,
-				height: 800,
+				height: 500,
 				fonts: [
 					{
 						name: "Roboto",
@@ -113,7 +113,7 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 				display: "flex",
 				flexDirection: "column",
 				width: "600px",
-				height: "800px",
+				height: "500px",
 				backgroundColor: "#ADD8E6",
 				border: "5px solid #00bfff",
 				borderRadius: "15px",
@@ -166,7 +166,7 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 					display: "flex",
 					flexDirection: "column",
 					justifyContent: "flex-start", // Align to the top
-					padding: "20px",
+					padding: "10px",
 					overflow: "hidden",
 				}}
 			>
@@ -174,7 +174,8 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 					style={{
 						fontSize: "28px",
 						fontWeight: "bold",
-						height: "90px",
+						margin: 0,
+						height: "80px",
 						overflow: "hidden",
 						display: "-webkit-box",
 						WebkitBoxOrient: "vertical",
@@ -189,11 +190,11 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 						fontSize: "24px",
 						color: "#555",
 						margin: 0,
-						height: "200px",
+						height: "80px",
 						overflow: "hidden",
 						display: "-webkit-box",
 						WebkitBoxOrient: "vertical",
-						WebkitLineClamp: 5,
+						WebkitLineClamp: 2,
 						textOverflow: "ellipsis",
 					}}
 				>
