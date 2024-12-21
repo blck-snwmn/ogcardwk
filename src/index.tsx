@@ -98,6 +98,8 @@ interface ComponentProps {
 	image_url?: string
 }
 const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) => {
+	console.log("title", title);
+	console.log("description", description);
 	return (
 		<div
 			style={{
@@ -106,7 +108,8 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 				width: "600px",
 				height: "800px",
 				backgroundColor: "#ADD8E6",
-				border: "5px solid #00bfff", // 目立つ枠
+				border: "5px solid #00bfff",
+				borderRadius: "15px",
 				overflow: "hidden",
 			}}
 		>
@@ -114,7 +117,7 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 			<div
 				style={{
 					width: "100%",
-					height: "315px", // 高さを半分に設定
+					height: "315px",
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
@@ -128,7 +131,7 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 						style={{
 							width: "100%",
 							height: "100%",
-							objectFit: "cover", // 見切れ防止
+							objectFit: "cover",
 						}}
 					/>
 				) : (
@@ -155,36 +158,36 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 					flex: 1,
 					display: "flex",
 					flexDirection: "column",
-					justifyContent: "center",
+					justifyContent: "flex-start", // 上部に配置
 					padding: "20px",
 					overflow: "hidden",
 				}}
 			>
-				<h1
+				<p
 					style={{
-						fontSize: "36px",
+						fontSize: "28px",
 						fontWeight: "bold",
-						marginBottom: "16px",
-						height: "72px", // 高さを固定
+						height: "90px", // 高さを固定
 						overflow: "hidden",
 						display: "-webkit-box",
-						WebkitLineClamp: 2, // 最大2行まで
 						WebkitBoxOrient: "vertical",
-						whiteSpace: "normal", // 折り返しを許可
+						WebkitLineClamp: 2,
+						textOverflow: "ellipsis",
 					}}
 				>
 					{title || "Default Title"}
-				</h1>
+				</p>
 				<p
 					style={{
 						fontSize: "24px",
 						color: "#555",
-						height: "72px", // 高さを固定
+						margin: "0", // 上下のマージンをなくす
+						height: "200px", // 高さを固定
 						overflow: "hidden",
 						display: "-webkit-box",
-						WebkitLineClamp: 3, // 最大3行まで
 						WebkitBoxOrient: "vertical",
-						whiteSpace: "normal", // 折り返しを許可
+						WebkitLineClamp: 5,
+						textOverflow: "ellipsis",
 					}}
 				>
 					{description || "Default description text that can wrap around to multiple lines if necessary."}
