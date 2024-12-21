@@ -5,7 +5,7 @@ import resvgWasm from "../node_modules/@resvg/resvg-wasm/index_bg.wasm";
 import satori from "satori";
 await initWasm(resvgWasm);
 
-import ogp from "open-graph-scraper-lite";
+import ogp, { SuccessResult } from "open-graph-scraper-lite";
 
 
 export default {
@@ -40,11 +40,7 @@ export default {
 		const fontData = await getGoogleFont();
 
 		const svg = await satori(
-			<OGPCard
-				title={meta.result.ogTitle}
-				description={meta.result.ogDescription}
-				image_url={meta.result.ogImage?.[0].url}
-			/>,
+			<OGPCard og={meta.result} />,
 			{
 				width: 600,
 				height: 500,
@@ -103,11 +99,11 @@ async function getGoogleFont() {
 }
 
 interface ComponentProps {
-	title?: string
-	description?: string
-	image_url?: string
+	og: SuccessResult['result']
 }
-const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) => {
+const OGPCard: React.FC<ComponentProps> = ({ og }) => {
+	const { ogTitle: title, ogDescription: description, ogImage: imageURLs } = og;
+	const imageURL = imageURLs?.[0].url
 	console.log("title", title);
 	console.log("description", description);
 	return (
@@ -134,9 +130,9 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 					overflow: "hidden",
 				}}
 			>
-				{image_url ? (
+				{imageURL ? (
 					<img
-						src={image_url}
+						src={imageURL}
 						alt={title}
 						style={{
 							width: "100%",
@@ -203,44 +199,6 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 				>
 					{description || "Default description text that can wrap around to multiple lines if necessary."}
 				</p>
-			</div>
-		</div>
-	);
-};
-
-const Component: React.FC<ComponentProps> = ({ title, description, image_url }) => {
-	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "row",
-				// width: "1200px",
-				// height: "630px",
-				alignItems: "center",
-				background: "#ADD8E6",
-			}}
-		>
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					width: "300px",
-					height: "300px",
-				}}
-			>
-				<h1>{title}</h1>
-				<p>{description}</p>
-			</div>
-			<div
-				style={{
-					display: "flex",
-					alignItems: "center",
-				}}
-			>
-				{image_url && <img src={image_url} alt={title} style={{
-					width: "300px",
-					height: "300px",
-				}} />}
 			</div>
 		</div>
 	);
