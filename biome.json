@@ -10,7 +10,12 @@
 		]
 	},
 	"formatter": {
-		"ignore": ["node_modules/*", "*/build/*", "*/.wrangler/*"]
+		"ignore": [
+			"node_modules/*",
+			"*/build/*",
+			"*/.wrangler/*'",
+			"worker-configuration.d.ts"
+		]
 	},
 	"linter": {
 		"ignore": [
