@@ -1,26 +1,25 @@
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
-import React from "react";
+import type React from "react";
+import satori from "satori";
 //@ts-ignore
 import resvgWasm from "../node_modules/@resvg/resvg-wasm/index_bg.wasm";
-import satori from "satori";
 await initWasm(resvgWasm);
 
-import ogp, { SuccessResult } from "open-graph-scraper-lite";
-
+import ogp, { type SuccessResult } from "open-graph-scraper-lite";
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		if (request.method !== 'GET') {
-			return new Response('Method Not Allowed', { status: 405 });
+		if (request.method !== "GET") {
+			return new Response("Method Not Allowed", { status: 405 });
 		}
 
 		const url = new URL(request.url);
-		if (url.pathname !== '/cards') {
-			return new Response('Not Found', { status: 404 });
+		if (url.pathname !== "/cards") {
+			return new Response("Not Found", { status: 404 });
 		}
-		const purl = url.searchParams.get('url');
+		const purl = url.searchParams.get("url");
 		if (!purl) {
-			return new Response('Bad Request', { status: 400 });
+			return new Response("Bad Request", { status: 400 });
 		}
 		const resp = await fetch(purl, {
 			headers: {
@@ -28,40 +27,36 @@ export default {
 			},
 		});
 		if (!resp.ok) {
-			return new Response('Failed to fetch URL', { status: 500 });
+			return new Response("Failed to fetch URL", { status: 500 });
 		}
 		const body = await resp.text();
 		const options = { html: body };
 		const meta = await ogp(options);
 		if (meta.error) {
-			return new Response('Failed to parse OGP', { status: 500 });
+			return new Response("Failed to parse OGP", { status: 500 });
 		}
 
 		const fontData = await getGoogleFont();
 
-		const svg = await satori(
-			<OGPCard og={meta.result} />,
-			{
-				width: 600,
-				height: 500,
-				fonts: [
-					{
-						name: "Roboto",
-						data: fontData,
-						weight: 400,
-						style: "normal",
-					},
-				],
-				loadAdditionalAsset: async (code: string, segment: string) => {
-					if (code === "emoji") {
-						return (`data:image/svg+xml;base64,${btoa(await loadEmoji(getIconCode(segment)))}`);
-					}
-
-					return (code);
+		const svg = await satori(<OGPCard og={meta.result} />, {
+			width: 600,
+			height: 500,
+			fonts: [
+				{
+					name: "Roboto",
+					data: fontData,
+					weight: 400,
+					style: "normal",
 				},
-			},
-		);
+			],
+			loadAdditionalAsset: async (code: string, segment: string) => {
+				if (code === "emoji") {
+					return `data:image/svg+xml;base64,${btoa(await loadEmoji(getIconCode(segment)))}`;
+				}
 
+				return code;
+			},
+		});
 
 		const resvg = new Resvg(svg, {
 			fitTo: {
@@ -99,11 +94,11 @@ async function getGoogleFont() {
 }
 
 interface ComponentProps {
-	og: SuccessResult['result']
+	og: SuccessResult["result"];
 }
 const OGPCard: React.FC<ComponentProps> = ({ og }) => {
 	const { ogTitle: title, ogDescription: description, ogImage: imageURLs } = og;
-	const imageURL = imageURLs?.[0].url
+	const imageURL = imageURLs?.[0].url;
 	console.log("title", title);
 	console.log("description", description);
 	return (
@@ -197,7 +192,8 @@ const OGPCard: React.FC<ComponentProps> = ({ og }) => {
 						textOverflow: "ellipsis",
 					}}
 				>
-					{description || "Default description text that can wrap around to multiple lines if necessary."}
+					{description ||
+						"Default description text that can wrap around to multiple lines if necessary."}
 				</p>
 			</div>
 		</div>
@@ -209,7 +205,9 @@ const UFE0Fg = /\uFE0F/g;
 
 export function getIconCode(char: string) {
 	// remove VS if char contains ZWJ
-	const unicodeSurrogates = !char.includes(U200D) ? char.replace(UFE0Fg, "") : char
+	const unicodeSurrogates = !char.includes(U200D)
+		? char.replace(UFE0Fg, "")
+		: char;
 
 	const r = [];
 	for (let i = 0; i < unicodeSurrogates.length; i++) {
@@ -220,10 +218,11 @@ export function getIconCode(char: string) {
 		r.push(codePoint.toString(16));
 		i += codePoint > 0xffff ? 2 : 1; // If it's a surrogate pair, advance two characters.
 	}
-	return r.join("-")
+	return r.join("-");
 }
 
 export async function loadEmoji(code: string) {
-	return fetch(`https://cdn.jsdelivr.net/gh/svgmoji/svgmoji/packages/svgmoji__noto/svg/${code.toUpperCase()}.svg`).then(async r =>
-		r.text());
+	return fetch(
+		`https://cdn.jsdelivr.net/gh/svgmoji/svgmoji/packages/svgmoji__noto/svg/${code.toUpperCase()}.svg`,
+	).then(async (r) => r.text());
 }
