@@ -53,6 +53,13 @@ export default {
 						style: "normal",
 					},
 				],
+				loadAdditionalAsset: async (code: string, segment: string) => {
+					if (code === "emoji") {
+						return (`data:image/svg+xml;base64,${btoa(await loadEmoji(getIconCode(segment)))}`);
+					}
+
+					return (code);
+				},
 			},
 		);
 
@@ -234,3 +241,27 @@ const Component: React.FC<ComponentProps> = ({ title, description, image_url }) 
 		</div>
 	);
 };
+
+const U200D = String.fromCharCode(8205);
+const UFE0Fg = /\uFE0F/g;
+
+export function getIconCode(char: string) {
+	// remove VS if char contains ZWJ
+	const unicodeSurrogates = !char.includes(U200D) ? char.replace(UFE0Fg, "") : char
+
+	const r = [];
+	for (let i = 0; i < unicodeSurrogates.length; i++) {
+		const codePoint = unicodeSurrogates.codePointAt(i);
+		if (codePoint == null) {
+			continue;
+		}
+		r.push(codePoint.toString(16));
+		i += codePoint > 0xffff ? 2 : 1; // If it's a surrogate pair, advance two characters.
+	}
+	return r.join("-")
+}
+
+export async function loadEmoji(code: string) {
+	return fetch(`https://cdn.jsdelivr.net/gh/svgmoji/svgmoji/packages/svgmoji__noto/svg/${code.toUpperCase()}.svg`).then(async r =>
+		r.text());
+}
