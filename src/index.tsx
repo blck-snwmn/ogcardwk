@@ -74,25 +74,6 @@ export default {
 	},
 } satisfies ExportedHandler<Env>;
 
-async function getGoogleFont() {
-	const familyResp = await fetch(
-		"https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700",
-	);
-	if (!familyResp.ok) {
-		throw new Error("Failed to load font data");
-	}
-	const css = await familyResp.text();
-	const resource = css.match(
-		/src: url\((.+)\) format\('(opentype|truetype)'\)/,
-	);
-	if (!resource) {
-		throw new Error("Failed to parse font data");
-	}
-
-	const fontDataResp = await fetch(resource[1]);
-	return await fontDataResp.arrayBuffer();
-}
-
 interface ComponentProps {
 	og: SuccessResult["result"];
 }
@@ -225,4 +206,23 @@ export async function loadEmoji(code: string) {
 	return fetch(
 		`https://cdn.jsdelivr.net/gh/svgmoji/svgmoji/packages/svgmoji__noto/svg/${code.toUpperCase()}.svg`,
 	).then(async (r) => r.text());
+}
+
+async function getGoogleFont() {
+	const familyResp = await fetch(
+		"https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700",
+	);
+	if (!familyResp.ok) {
+		throw new Error("Failed to load font data");
+	}
+	const css = await familyResp.text();
+	const resource = css.match(
+		/src: url\((.+)\) format\('(opentype|truetype)'\)/,
+	);
+	if (!resource) {
+		throw new Error("Failed to parse font data");
+	}
+
+	const fontDataResp = await fetch(resource[1]);
+	return await fontDataResp.arrayBuffer();
 }
