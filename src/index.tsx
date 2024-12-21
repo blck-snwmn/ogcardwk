@@ -191,7 +191,7 @@ const OGPCard: React.FC<ComponentProps> = ({ url, og }) => {
 const U200D = String.fromCharCode(8205);
 const UFE0Fg = /\uFE0F/g;
 
-export function getIconCode(char: string) {
+function getIconCode(char: string) {
 	// remove VS if char contains ZWJ
 	const unicodeSurrogates = !char.includes(U200D)
 		? char.replace(UFE0Fg, "")
@@ -209,7 +209,7 @@ export function getIconCode(char: string) {
 	return r.join("-");
 }
 
-export async function loadEmoji(code: string) {
+async function loadEmoji(code: string) {
 	return fetch(
 		`https://cdn.jsdelivr.net/gh/svgmoji/svgmoji/packages/svgmoji__noto/svg/${code.toUpperCase()}.svg`,
 	).then(async (r) => r.text());
