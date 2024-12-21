@@ -41,7 +41,7 @@ export default {
 
 		const svg = await satori(<OGPCard url={pURL} og={meta.result} />, {
 			width: 600,
-			height: 500,
+			height: 550,
 			fonts: [
 				{
 					name: "Roboto",
@@ -81,7 +81,7 @@ interface ComponentProps {
 }
 const OGPCard: React.FC<ComponentProps> = ({ url, og }) => {
 	const {
-		favicon,
+		ogSiteName,
 		ogTitle: title,
 		ogDescription: description,
 		ogImage: imageURLs,
@@ -89,13 +89,14 @@ const OGPCard: React.FC<ComponentProps> = ({ url, og }) => {
 	const imageURL = imageURLs?.[0].url;
 	console.log("title", title);
 	console.log("description", description);
+
 	return (
 		<div
 			style={{
 				display: "flex",
 				flexDirection: "column",
 				width: "600px",
-				height: "500px",
+				height: "550px",
 				backgroundColor: "#ADD8E6",
 				border: "5px solid #00bfff",
 				borderRadius: "15px",
@@ -152,6 +153,16 @@ const OGPCard: React.FC<ComponentProps> = ({ url, og }) => {
 					overflow: "hidden",
 				}}
 			>
+				{/* Favicon and Domain */}
+				<div
+					style={{
+						fontSize: "18px",
+						color: "#555",
+						height: "24px",
+					}}
+				>
+					{ogSiteName}
+				</div>
 				<p
 					style={{
 						fontSize: "28px",
