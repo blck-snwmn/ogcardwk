@@ -17,11 +17,12 @@ export default {
 		if (url.pathname !== "/cards") {
 			return new Response("Not Found", { status: 404 });
 		}
-		const purl = url.searchParams.get("url");
-		if (!purl) {
+		const parameterURL = url.searchParams.get("url");
+		if (!parameterURL) {
 			return new Response("Bad Request", { status: 400 });
 		}
-		const resp = await fetch(purl, {
+		const pURL = new URL(parameterURL);
+		const resp = await fetch(pURL.toString(), {
 			headers: {
 				"User-Agent": "bot",
 			},
@@ -38,7 +39,7 @@ export default {
 
 		const fontData = await getGoogleFont();
 
-		const svg = await satori(<OGPCard og={meta.result} />, {
+		const svg = await satori(<OGPCard url={pURL} og={meta.result} />, {
 			width: 600,
 			height: 500,
 			fonts: [
@@ -75,10 +76,16 @@ export default {
 } satisfies ExportedHandler<Env>;
 
 interface ComponentProps {
+	url: URL;
 	og: SuccessResult["result"];
 }
-const OGPCard: React.FC<ComponentProps> = ({ og }) => {
-	const { ogTitle: title, ogDescription: description, ogImage: imageURLs } = og;
+const OGPCard: React.FC<ComponentProps> = ({ url, og }) => {
+	const {
+		favicon,
+		ogTitle: title,
+		ogDescription: description,
+		ogImage: imageURLs,
+	} = og;
 	const imageURL = imageURLs?.[0].url;
 	console.log("title", title);
 	console.log("description", description);
