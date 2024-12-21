@@ -39,7 +39,7 @@ export default {
 
 		const fontData = await getGoogleFont();
 
-		const svg = await satori(<OGPCard url={pURL} og={meta.result} />, {
+		const svg = await satori(<OGPCard og={meta.result} />, {
 			width: 600,
 			height: 550,
 			fonts: [
@@ -76,10 +76,9 @@ export default {
 } satisfies ExportedHandler<Env>;
 
 interface ComponentProps {
-	url: URL;
 	og: SuccessResult["result"];
 }
-const OGPCard: React.FC<ComponentProps> = ({ url, og }) => {
+const OGPCard: React.FC<ComponentProps> = ({ og }) => {
 	const {
 		ogSiteName,
 		ogTitle: title,
