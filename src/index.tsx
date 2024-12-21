@@ -165,7 +165,7 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 					flex: 1,
 					display: "flex",
 					flexDirection: "column",
-					justifyContent: "flex-start", // 上部に配置
+					justifyContent: "flex-start", // Align to the top
 					padding: "20px",
 					overflow: "hidden",
 				}}
@@ -174,7 +174,7 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 					style={{
 						fontSize: "28px",
 						fontWeight: "bold",
-						height: "90px", // 高さを固定
+						height: "90px",
 						overflow: "hidden",
 						display: "-webkit-box",
 						WebkitBoxOrient: "vertical",
@@ -188,8 +188,8 @@ const OGPCard: React.FC<ComponentProps> = ({ title, description, image_url }) =>
 					style={{
 						fontSize: "24px",
 						color: "#555",
-						margin: "0", // 上下のマージンをなくす
-						height: "200px", // 高さを固定
+						margin: 0,
+						height: "200px",
 						overflow: "hidden",
 						display: "-webkit-box",
 						WebkitBoxOrient: "vertical",
