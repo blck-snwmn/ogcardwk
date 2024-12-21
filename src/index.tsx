@@ -33,6 +33,9 @@ export default {
 		const body = await resp.text();
 		const options = { html: body };
 		const meta = await ogp(options);
+		if (meta.error) {
+			return new Response('Failed to parse OGP', { status: 500 });
+		}
 
 		const fontData = await getGoogleFont();
 
