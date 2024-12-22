@@ -37,9 +37,12 @@ export default {
 			return new Response("Failed to parse OGP", { status: 500 });
 		}
 
+		console.log("favicon", meta.result.favicon);
+		const favicon = await fetchBase64Favicon(meta.result.favicon);
+
 		const fontData = await getGoogleFont();
 
-		const svg = await satori(<OGPCard og={meta.result} />, {
+		const svg = await satori(<OGPCard favicon={favicon} og={meta.result} />, {
 			width: 600,
 			height: 550,
 			fonts: [
@@ -76,9 +79,10 @@ export default {
 } satisfies ExportedHandler<Env>;
 
 interface ComponentProps {
+	favicon: string | undefined;
 	og: SuccessResult["result"];
 }
-const OGPCard: React.FC<ComponentProps> = ({ og }) => {
+const OGPCard: React.FC<ComponentProps> = ({ favicon, og }) => {
 	const {
 		ogSiteName,
 		ogTitle: title,
@@ -153,6 +157,17 @@ const OGPCard: React.FC<ComponentProps> = ({ og }) => {
 				}}
 			>
 				{/* Favicon and Domain */}
+				{favicon && (
+					<img
+						src={favicon}
+						alt="favicon"
+						style={{
+							width: "24px",
+							height: "24px",
+							marginRight: "5px",
+						}}
+					/>
+				)}
 				<div
 					style={{
 						fontSize: "18px",
@@ -223,6 +238,24 @@ async function loadEmoji(code: string) {
 	return fetch(
 		`https://cdn.jsdelivr.net/gh/svgmoji/svgmoji/packages/svgmoji__noto/svg/${code.toUpperCase()}.svg`,
 	).then(async (r) => r.text());
+}
+
+async function fetchBase64Favicon(url: string | undefined) {
+	console.log("favicon url", url);
+	if (!url) {
+		return;
+	}
+	const resp = await fetch(url);
+	if (!resp.ok) {
+		return;
+	}
+
+	const arrayBuffer = await resp.arrayBuffer();
+	let string = '';
+	for (const byte of new Uint8Array(arrayBuffer)) {
+		string += String.fromCharCode(byte);
+	}
+	return `data:image/png;base64,${btoa(string)}`;
 }
 
 async function getGoogleFont() {
